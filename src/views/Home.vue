@@ -9,7 +9,10 @@
           Welcome to the Frotell
         </h1>
 
-
+        <div class="col-12 col-md-4">
+          <file-uploader upload-key="images" style="margin:0" :uploadUrl="fileUploadUrl" :files="[]" singleMode
+                         @afterUpload="setUploadFile"/>
+        </div>
         <template v-if="isAuthenticated">
           <a href="#" class="navbar-item" @click="logout"
              target="_blank">logout
@@ -27,16 +30,31 @@
 <script>
 import {LOGOUT} from "../store/auth.module";
 import {mapGetters} from "vuex";
-
+import fileUploader from "@/components/file-uploader.vue";
 export default {
   name: 'Home',
+  components:{fileUploader},
+
+  data() {
+    return {
+      fileUploadUrl: '/public/file/upload/art',
+      formData: {},
+    }
+  },
   computed: {
     ...mapGetters(['isAuthenticated', 'currentUser'])
   },
   methods: {
     logout() {
       this.$store.dispatch(LOGOUT)
-    }
+    },
+    setUploadFile(event) {
+      if (event.id_file.length > 0) {
+        event.id_file.map(val => {
+          this.formData.id_file = (val.id_file);
+        });
+      }
+    },
   }
 }
 </script>
